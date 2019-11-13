@@ -1,0 +1,12 @@
+# Gemfile
+source 'https://rubygems.org'
+
+group :development do
+  gem 'rubycritic'
+end
+
+group :test do
+  gem 'rspec'
+  gem 'guard'
+  gem 'guard-rspec'
+end

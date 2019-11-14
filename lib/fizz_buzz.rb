@@ -10,19 +10,25 @@
 # FizzBuzzer rule
 class FizzBuzz
   def initialize
-    @rules = [ModRule.new(3, 'fizz'),
-              ModRule.new(5, 'buzz'),
-              ModRule.new(7, 'bang')]
+    composite_rule = CompositeRule.new(
+      [ModRule.new(3, 'fizz'),
+       ModRule.new(5, 'buzz'),
+       ModRule.new(7, 'bang')]
+    )
+    @rule = FirstMatchRule.new(
+      [
+        composite_rule,
+        EchoRule.new
+      ]
+    )
   end
 
   def get_string(num)
-    result = ''
-    @rules.each do |rule|
-      result << rule.handle(num)
-    end
-    result.empty? ? num.to_s : result
+    @rule.get_string(num)
   end
 end
+
+# IRule
 
 class ModRule
   def initialize(num, output)
@@ -30,7 +36,42 @@ class ModRule
     @output = output
   end
 
-  def handle(input)
-    (input % @num).zero? ? @output : ''
+  def get_string(num)
+    (num % @num).zero? ? @output : nil
+  end
+end
+
+class EchoRule
+  def get_string(num)
+    num.to_s
+  end
+end
+
+class FirstMatchRule
+  def initialize(rules)
+    @rules = rules
+  end
+
+  def get_string(num)
+    @rules.each do |rule|
+      matched = rule.get_string(num)
+      return matched if matched
+    end
+    nil
+  end
+end
+
+class CompositeRule
+  def initialize(rules)
+    @rules = rules
+  end
+
+  def get_string(num)
+    result = ''
+    @rules.each do |rule|
+      matched = rule.get_string(num)
+      result += matched if matched
+    end
+    result.empty? ? nil : result
   end
 end

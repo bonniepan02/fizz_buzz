@@ -1,4 +1,5 @@
 require 'fizz_buzz'
+require 'pry'
 
 describe FizzBuzz do
   subject(:fizzbuzz) { FizzBuzz.new }

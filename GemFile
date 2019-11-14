@@ -2,11 +2,12 @@
 source 'https://rubygems.org'
 
 group :development do
-  gem 'rubycritic'
+  gem 'json'
 end
 
 group :test do
   gem 'rspec'
+  gem 'pry'
   gem 'guard'
   gem 'guard-rspec'
 end

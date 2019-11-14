@@ -24,7 +24,86 @@ class FizzBuzz
   end
 
   def get_string(num)
-    @rule.get_string(num)
+    path = File.expand_path('../test.json', __dir__)
+    input = File.read(path)
+    value = JSON.parse(input, symbolize_names: true).first
+    factory = FactoryMapper.new.get(value)
+    rule = factory.create(value)
+
+    rule.get_string(num)
+  end
+end
+
+class FactoryMapper
+  def initialize
+    @type_to_factory = {}
+    @type_to_factory[:ModRule] = ModRuleFactory.new
+    @type_to_factory[:EchoRule] = EchoRuleFactory.new
+    @type_to_factory[:CompositeRule] = CompositeRuleFactory.new(@type_to_factory)
+    @type_to_factory[:FirstMatchRule] = FirstMatchRuleFactory.new(@type_to_factory)
+  end
+
+  def get(element)
+    rule = element[:rule_type].to_sym
+    @type_to_factory[rule]
+  end
+end
+
+# IFactory
+class FirstMatchRuleFactory
+  def initialize(type_to_factory)
+    @type_to_factory = type_to_factory
+  end
+
+  def create(element)
+    element_rules = element[:rules]
+    rules = element_rules.map do |rule|
+      rule_type = rule[:rule_type].to_sym
+      @type_to_factory[rule_type].create(rule)
+    end
+
+    FirstMatchRule.new(rules)
+  end
+end
+
+class CompositeRuleFactory
+  def initialize(type_to_factory)
+    @type_to_factory = type_to_factory
+  end
+
+  def create(element)
+    element_rules = element[:rules]
+    rules = element_rules.map do |rule|
+      rule_type = rule[:rule_type].to_sym
+      @type_to_factory[rule_type].create(rule)
+    end
+
+    CompositeRule.new(rules)
+  end
+end
+
+
+class ModRuleFactory
+  def create(element)
+    ModRule.new(element[:modulus], element[:output])
+  end
+end
+class EchoRuleFactory
+  def create(_element)
+    EchoRule.new
+  end
+end
+
+# IParser
+class JsonParser
+  def initialize(factory)
+    @factory = factory
+  end
+
+  def rules
+    input = File.read('test.json')
+    value = Json.parse(input)
+    @factory.create(value)
   end
 end
 

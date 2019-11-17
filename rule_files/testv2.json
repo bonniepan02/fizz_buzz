@@ -1,0 +1,24 @@
+[
+    {
+        "rule_type": "ModRule",
+        "modulus": 3,
+        "output": "fizz",
+        "sequence": 1
+    },
+    {
+        "rule_type": "ModRule",
+        "modulus": 5,
+        "output": "buzz",
+        "sequence": 2
+    },
+    {
+        "rule_type": "ModRule",
+        "modulus": 7,
+        "output": "bang",
+        "sequence": 3
+    },
+    {
+        "rule_type": "EchoRule",
+        "sequence": 4
+    }
+]

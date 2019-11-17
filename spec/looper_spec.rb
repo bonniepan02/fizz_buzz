@@ -3,7 +3,7 @@ require 'fizz_buzz'
 
 describe Looper do
   context 'guiding real test' do
-    xit '#run' do
+    it '#run' do
       looper = Looper.new
       expect(looper.run(100)).to eql('1 2 fizz 4 buzz fizz bang 8 fizz buzz 11 fizz 13 bang fizzbuzz 16 17 fizz 19 buzz fizzbang 22 23 fizz buzz 26 fizz bang 29 fizzbuzz 31 32 fizz 34 buzzbang fizz 37 38 fizz buzz 41 fizzbang 43 44 fizzbuzz 46 47 fizz bang buzz fizz 52 53 fizz buzz bang fizz 58 59 fizzbuzz 61 62 fizzbang 64 buzz fizz 67 68 fizz buzzbang 71 fizz 73 74 fizzbuzz 76 bang fizz 79 buzz fizz 82 83 fizzbang buzz 86 fizz 88 89 fizzbuzz bang 92 fizz 94 buzz fizz 97 bang fizz buzz')
     end

@@ -19,7 +19,7 @@
                         "output": "bang"
                     }
                 ],
-                "rule_type": "CompositeRule"
+                "rule_type": "CombinedRule"
             },
             {
                 "rule_type": "EchoRule"

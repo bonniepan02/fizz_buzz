@@ -6,6 +6,6 @@ class FizzBuzz
 
   def run_rule(num)
     rule = @rule_repository.rule
-    rule.get_string(num)
+    rule.get_string(num: num)
   end
 end

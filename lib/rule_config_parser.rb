@@ -7,9 +7,10 @@ class RuleConfigParser
 
   def parse(content)
     elements = JSON.parse(content, symbolize_names: true)
+
     @rules = elements.map do |element|
       factory = @mapper.rule_factory_by(element[:rule_type])
-      factory.create(element)
+      factory.create(element: element)
     end
   end
 

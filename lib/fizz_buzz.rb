@@ -7,30 +7,36 @@
 #    evenly divisible by 21, print 'fizzbang'
 #    evenly divisible by 35, print 'buzzbang'
 # Otherwise print the number.
+# composite_rule = CompositeRule.new(
+#      [ModRule.new(3, 'fizz'),
+#       ModRule.new(5, 'buzz'),
+#       ModRule.new(7, 'bang')]
+#    )
+#    @rule = FirstMatchRule.new(
+#      [
+#        composite_rule,
+#      ]
+#    )
 # FizzBuzzer rule
 class FizzBuzz
   def initialize
-    composite_rule = CompositeRule.new(
-      [ModRule.new(3, 'fizz'),
-       ModRule.new(5, 'buzz'),
-       ModRule.new(7, 'bang')]
-    )
-    @rule = FirstMatchRule.new(
-      [
-        composite_rule,
-        EchoRule.new
-      ]
-    )
+    mapper = FactoryMapper.new
+    parser = JsonParser.new(mapper)
+    @rule = RuleRepository.new(parser).rules.first
   end
 
   def get_string(num)
-    path = File.expand_path('../test.json', __dir__)
-    input = File.read(path)
-    value = JSON.parse(input, symbolize_names: true).first
-    factory = FactoryMapper.new.get(value)
-    rule = factory.create(value)
+    @rule.get_string(num)
+  end
+end
 
-    rule.get_string(num)
+class RuleRepository
+  def initialize(parser)
+    @parser = parser
+  end
+
+  def rules
+    @parser.rules
   end
 end
 
@@ -43,7 +49,7 @@ class FactoryMapper
     @type_to_factory[:FirstMatchRule] = FirstMatchRuleFactory.new(@type_to_factory)
   end
 
-  def get(element)
+  def rule_factory(element)
     rule = element[:rule_type].to_sym
     @type_to_factory[rule]
   end
@@ -82,7 +88,6 @@ class CompositeRuleFactory
   end
 end
 
-
 class ModRuleFactory
   def create(element)
     ModRule.new(element[:modulus], element[:output])
@@ -96,19 +101,19 @@ end
 
 # IParser
 class JsonParser
-  def initialize(factory)
-    @factory = factory
+  def initialize(mapper)
+    @mapper = mapper
   end
 
   def rules
-    input = File.read('test.json')
-    value = Json.parse(input)
-    @factory.create(value)
+    path = File.expand_path('../test.json', __dir__)
+    input = File.read(path)
+    values = JSON.parse(input, symbolize_names: true)
+    values.map { |v| @mapper.rule_factory(v).create(v) }
   end
 end
 
 # IRule
-
 class ModRule
   def initialize(num, output)
     @num = num
@@ -153,4 +158,4 @@ class CompositeRule
     end
     result.empty? ? nil : result
   end
-end
+ end

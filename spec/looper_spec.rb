@@ -12,7 +12,7 @@ describe Looper do
   context 'calls fizzbuzz in a loop' do
     it '#run(2)' do
       fizz_buzz = double(FizzBuzz)
-      allow(fizz_buzz).to receive(:get_string).and_return('fizz')
+      allow(fizz_buzz).to receive(:run_rule).and_return('fizz')
       allow(FizzBuzz).to receive(:new).and_return(fizz_buzz)
       looper = Looper.new
       expect(looper.run(2)).to eql('fizz fizz')
